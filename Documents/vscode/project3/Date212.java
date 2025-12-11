@@ -144,12 +144,51 @@ public class Date212 implements Comparable<Date212> {
 	}
 	
 	/**
-	 * Returns a string representation of this date in "Month Day, Year" format.
+	 * Calculates the day of the week using Zeller's Congruence algorithm.
+	 * Zeller's Congruence is an algorithm to calculate the day of the week
+	 * for any Gregorian calendar date.
 	 * 
-	 * @return a formatted string (e.g., "November 17, 2021")
+	 * @return the day of the week as a number (0 = Saturday, 1 = Sunday, ..., 6 = Friday)
+	 */
+	private int getDayOfWeek() {
+		int q = day;
+		int m = month;
+		int y = year;
+		
+		// January and February are treated as months 13 and 14 of the previous year
+		if (m == 1 || m == 2) {
+			m += 12;
+			y--;
+		}
+		
+		int k = y % 100;  // Year of the century
+		int j = y / 100;  // Zero-based century
+		
+		// Zeller's Congruence formula for Gregorian calendar
+		int h = (q + (13 * (m + 1)) / 5 + k + k / 4 + j / 4 + 5 * j) % 7;
+		
+		return h;
+	}
+	
+	/**
+	 * Returns the name of the day of the week for a given day number.
+	 * 
+	 * @param dayNum the day number (0 = Saturday, 1 = Sunday, ..., 6 = Friday)
+	 * @return the name of the day (e.g., "Monday", "Tuesday")
+	 */
+	private static String dayName(int dayNum) {
+		String[] dayNames = {"Saturday", "Sunday", "Monday", "Tuesday", 
+							 "Wednesday", "Thursday", "Friday"};
+		return dayNames[dayNum];
+	}
+	
+	/**
+	 * Returns a string representation of this date in "Day, Month Day, Year" format.
+	 * 
+	 * @return a formatted string (e.g., "Friday, December 5, 2025")
 	 */
 	public String toString() {
-		return monthName(month) + " " + day + ", " + year;
+		return dayName(getDayOfWeek()) + ", " + monthName(month) + " " + day + ", " + year;
 	}
 	
 	/**
